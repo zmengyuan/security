@@ -1,0 +1,67 @@
+﻿1-1 导学
+2-1 开发环境安装（视频中有详细讲解）
+	JDK
+	STS
+	Mysql
+2-2 代码结构
+	1、
+	imooc-security:主模块
+	imooc-security-core:核心业务逻辑
+	imooc-security-browser:浏览器安全特定代码
+	imooc-security-app:app相关特定代码
+	imooc-security-demo:样例程序
+	2、
+	新建maven项目，勾选create a simple project，选择pom，1.0.0-SHAPSHOT
+	其余四个项目就基于第一个，然后选择jar，1.0.0-SHAPSHOT
+	3、
+	在父项目pom中添加依赖管理，这里其实是使用了spring-io的依赖管理，可以在官网查看到，里面的依赖管理也是从官网copy的，使用这个的目的是如果你引用spring，hibernate等，可以不用自己写版本号，spring-io会帮助你选择合适的版本。
+	还添加spring-cloud的依赖，
+	添加编译环境1.8
+	引入子模块，这时候其他4个子模块会报错是因为指定1.8，其他几个是1.5版本，这时候更新一下其他几个子模块即可
+	4、
+	core的pom文件
+	browser的pom文件
+	app的pom文件
+	demo的pom文件
+	5、idea创建项目
+	https://www.cnblogs.com/wangmingshun/p/6383576.html
+2-3 Hello Spring Security
+	1、
+		在demo项目中写springboot启动类DemoApplicaiton将其定为RestController
+		启动项目会报错
+		Description:
+		Cannot determine embedded database driver class for database type NONE
+		这是因为依赖了spring-boot-jdbc但没有配置
+		在applicaiton.properties里配置数据库连接信息
+	2、
+		再次启动
+		报错Error creating bean with name 'org.springframework.boot.autoconfigure.session.SessionAutoConfiguration$SessionRepositoryValidator': Invocation of init method failed; nested exception is java.lang.IllegalArgumentException: No Spring Session store is configured: set the 'spring.session.store-type' property
+		这是因为在browser里面配置了一个session依赖，先关掉spring.session.store-type=none
+	3、
+		再次启动
+		启动成功，访问localhost：8080，弹出安全认证，这是springsecurity的默认认证
+		关闭security.basic.enabled=false
+	4、
+		程序如何打包发布，在父项目中执行命令maven build...
+		clean package
+		这样每个项目的target文件夹下就有一个自己的jar包，但是这样是不行的
+		demo项目应该是一个web项目，所以需要在demo的pom文件中加入插件，这样在demo文件夹会多一个jar包，这是一个可执行的jar
+		可以用java -jar 这个jar包执行，就相当于启动main函数
+
+3-1使用Spring Mvc开发RestFul API
+	1、RestfulApi
+		（1）用URL描述资源
+		（2）使用HTTP方法描述行为，使用HTTP状态码来表示不同的结果
+			GRT查
+			POST增
+			PUT改
+			DELETE删
+		（3）使用json交互数据
+		（4）只是一种风格，并不是强制的标准
+	2、REST成熟度模型
+		（1）使用HTTP作为传输方式
+		（2）引入资源概念，每个资源都有对应的URL
+		（3）使用HTTP方法进行不同的的操作，使用HTTP状态吗来表示不同的结果
+		（4）使用超媒体，在资源的表达中包含了链接信息
+
+
