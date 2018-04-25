@@ -95,3 +95,17 @@
     	在值对象的get方法指定视图
     	在controller上指定视图
     .andReturn().getResponse().getContentAsString()测试用例中返回json字符串
+
+ 3-4处理创建请求
+    1、@RequestBody映射请求到java方法的参数
+    2、日期类型参数的处理
+    3、@Valid注解和BindingResult验证请求参数的合法性并处理校验结果
+
+    @RquestBody：请求中请求体
+    whenCreateSuccess() 方法
+    405请求method后台不支持，比如后台是get，而发是post
+    日期类型参数的处理：不要传带格式的，传时间戳，由前台确定展示格式
+    @Valid和BindingResult
+    	在类中添加了notblank之后，需要在controller加valied注解
+    	当有valid注解而没有BindingResult类在Controller时候，有错误的话，程序会返回404
+    	当有BindingResult类的时候，程序会执行

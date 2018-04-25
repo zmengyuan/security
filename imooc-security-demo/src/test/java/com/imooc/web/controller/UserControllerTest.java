@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Date;
+
 @RunWith(SpringRunner.class)//如何执行测试用例，会用一个SpringRunner来执行
 @SpringBootTest
 public class UserControllerTest {
@@ -83,5 +85,23 @@ public class UserControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/user/a")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
+    /**
+     * post方法的时候请求的时候需要多一个content
+     * @throws Exception
+     */
+    @Test
+    public void whenCreateSuccess() throws Exception {
+        Date date = new Date();
+        System.out.println(date.getTime());
+        String content = "{\"username\":\"tom\",\"password\":null,\"birthday\":"+date.getTime()+"}";
+        String reuslt = mockMvc.perform(MockMvcRequestBuilders.post("/user").contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value("1"))
+                .andReturn().getResponse().getContentAsString();
+
+        System.out.println(reuslt);
     }
 }

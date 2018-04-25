@@ -2,6 +2,9 @@ package com.imooc.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonView;
+import org.hibernate.validator.constraints.NotBlank;
+
+import java.util.Date;
 
 public class User {
 
@@ -10,7 +13,28 @@ public class User {
 
     private String username;
 
+    @NotBlank
     private String password;
+
+    private String id;
+
+    private Date birthday;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Date getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(Date birthday) {
+        this.birthday = birthday;
+    }
 
     @JsonView(UserSimpleView.class)
     public String getUsername() {
