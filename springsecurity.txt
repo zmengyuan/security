@@ -63,5 +63,35 @@
 		（2）引入资源概念，每个资源都有对应的URL
 		（3）使用HTTP方法进行不同的的操作，使用HTTP状态吗来表示不同的结果
 		（4）使用超媒体，在资源的表达中包含了链接信息
+3-2查询请求
+    1、编写针对RestfulAPI的测试用例
+        编写对RestfulAPI的测试用例 依赖：后期引入测试用例
+        	UserControllerTest类whenQuerySuccess方法
+        	看上面对测试用例的的注解
+        	在sts中添加偏好Favorite，静态导入
+    2、使用注解声明RestfulAPI
+    3、在RestfulAPI中传递参数
+        @RestController标明此Controller提供restAPI
+        @RequestMapping及其变体。映射HTTP请求：value = "/user",method = RequestMethod.GET
+        @RequestParam映射请求参数：required = false,name = "username",value = "username",defaultValue = "zhhangsan"
+        Pageable类分页对象，是springdata的对象如果用spring-data可以用这个非常方便，可以使用@PageableDefault默认值
+        JSONPATH写法：在GitHub上面找
 
+        400错误，表示没有请求
 
+        System.out.println(ReflectionToStringBuilder.toString(userQueryCondition, ToStringStyle.MULTI_LINE_STYLE));
+
+3-3用户详情服务
+    1、@PathVariable映射url片段到java方法的参数
+    2、在url声明中使用正则表达式
+    3、@JsonView控制json输出内容
+
+    编写用户详情服务whenGetInfoSuccess方法
+    @PahtVariable：url中的片段作为值，参数中的正则表达式
+    post方法的时候请求的时候需要多一个content
+    使用正则表达式whenGetInfoFail方法
+    @JsonView控制返回json的内容
+    	使用接口来声明多个视图：在User类，用户详细视图可以继承简单视图
+    	在值对象的get方法指定视图
+    	在controller上指定视图
+    .andReturn().getResponse().getContentAsString()测试用例中返回json字符串
