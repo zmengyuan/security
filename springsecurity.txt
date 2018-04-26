@@ -122,3 +122,23 @@
     		@Target({ElementType.METHOD,ElementType.FIELD})
     		@Retention(RetentionPolicy.RUNTIME)
     		@Constraint(validatedBy = MyConstraintValidator.class)
+
+3-6 RESTful API错误处理
+    1、SpringBoot默认的错误处理机制
+    2、自定义异常处理
+
+SpringBoot默认错误处理机制（用的getInfo（）方法）：
+	BasicErrorController 根据请求头作出判断：（这里看出同一个url有不同的处理）
+	请求头里面有text/html，会进入public ModelAndView errorHtml方法
+	没有的时候，会进入public ResponseEntity<Map<String, Object>> error方法
+	当是浏览器访问时候，返回html，其它情况情况返回json（这种情况会是直接就没有进到方法里，在传入参数那里就直接返回错误了）
+	springboot默认的错误处理返回的json的message是后端抛出异常的message
+
+自定义错误处理
+	springboot自定义错误处理是基于状态码来处理的，
+	在resources/resources/error文件夹中写状态码.html，这种只对浏览器访问有效，其他平台访问还是返回的json字符串
+
+	新建exception包，新建类，自定义异常类，在controller类中抛出自定义异常类，但是springboot返回的json也只会返回message字段，
+	如果想返回其他信息：新建类ControllerExceptionHandler类
+	@ControllerAdvice注解表示这个类是用来处理Controller类抛出的异常的，本身不处理请求
+	方法handleUserNotExistException（）上面可以添加注解

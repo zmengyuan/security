@@ -3,6 +3,7 @@ package com.imooc.web.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.imooc.dto.User;
 import com.imooc.dto.UserQueryCondition;
+import com.imooc.exception.UserNotExistException;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +31,7 @@ public class UserController {
         return list;
     }
 
-    @RequestMapping(value = "/ondition",method = RequestMethod.GET)
+    @RequestMapping(value = "/condition",method = RequestMethod.GET)
     @JsonView(User.UserSimpleView.class)
     public List<User> queryCondition(UserQueryCondition userQueryCondition,
                                      @PageableDefault(page = 2,size = 17,sort = "username") Pageable pageable) {
@@ -49,12 +50,14 @@ public class UserController {
     @JsonView(User.UserDetailView.class)
     public User getInfo(@PathVariable(name = "id",value = "id",required = false) String id) {
 
-//		throw new UserNotExistException(id);
+//        throw new RuntimeException("user not exist");
+        throw  new UserNotExistException(id);
 
-        System.out.println("进入getinfo");
-        User user = new User();
-        user.setUsername("tom");
-        return user;
+
+//        System.out.println("进入getinfo");
+//        User user = new User();
+//        user.setUsername("tom");
+//        return user;
     }
 
     @PostMapping
