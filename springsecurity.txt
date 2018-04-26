@@ -127,14 +127,14 @@
     1、SpringBoot默认的错误处理机制
     2、自定义异常处理
 
-SpringBoot默认错误处理机制（用的getInfo（）方法）：
+    SpringBoot默认错误处理机制（用的getInfo（）方法）：
 	BasicErrorController 根据请求头作出判断：（这里看出同一个url有不同的处理）
 	请求头里面有text/html，会进入public ModelAndView errorHtml方法
 	没有的时候，会进入public ResponseEntity<Map<String, Object>> error方法
 	当是浏览器访问时候，返回html，其它情况情况返回json（这种情况会是直接就没有进到方法里，在传入参数那里就直接返回错误了）
 	springboot默认的错误处理返回的json的message是后端抛出异常的message
 
-自定义错误处理
+    自定义错误处理
 	springboot自定义错误处理是基于状态码来处理的，
 	在resources/resources/error文件夹中写状态码.html，这种只对浏览器访问有效，其他平台访问还是返回的json字符串
 
@@ -142,3 +142,33 @@ SpringBoot默认错误处理机制（用的getInfo（）方法）：
 	如果想返回其他信息：新建类ControllerExceptionHandler类
 	@ControllerAdvice注解表示这个类是用来处理Controller类抛出的异常的，本身不处理请求
 	方法handleUserNotExistException（）上面可以添加注解
+
+3-7使用切片拦截Rest服务
+    1、过滤器拦截
+    2、拦截器拦截
+    3、切片拦截
+
+    需求：记录所有服务的处理时间
+
+    过滤器：是javaee的规范，它不知道controller之类的东西
+        TimeFilter：实现Filter接口，然后@Component让过滤器起作用
+        但是如果是第三方的过滤器，它没有使用@Component注解，那么我们怎么让他起作用呢？
+        传统的web项目中是web.xml添加过滤器，但是SpringBoot是没有配置文件的
+        现在吧TimeFilter当成第三方，新建WebConfig类，注解@Configuration,然后在里面注入bean
+
+    Spring注入Bean：（1）添加@Component之类的注解，spring会扫描这些注解
+                    （2）配置类，注入@Bean
+
+    拦截器：
+        TimeInterceptor implements HandlerInterceptor：
+        //控制器处理之前调用：preHandle
+        //控制器处理之后调用，如果controller层抛出异常，这个方法不会调用：postHandle
+        //不管controller是正常运行，还是抛出异常，这个方法都会正常调用afterCompletion
+        拦截器必须加@Component注解，还不够，还需要再WebConfig配置才可以，这时候
+        WebCOnfig必须继承extends WebMvcConfigurerAdapter类，重写addInterceptors方法
+        拦截器的finish方法当有异常发生的时候，异常还是返回空，是因为
+                ControllerExceptionHandler已经把异常处理掉了
+                当没有处理某类异常，会看到拦截器运行了两次
+                第一次拦截的是UserController
+                第二次拦截的是BasicErrorController
+                拦截器会拦截所有的Controler，不管是不是自己写的
