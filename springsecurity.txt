@@ -172,3 +172,15 @@
                 第一次拦截的是UserController
                 第二次拦截的是BasicErrorController
                 拦截器会拦截所有的Controler，不管是不是自己写的
+
+    切片：实际就是一个类
+            切入点（注解：在哪些方法起作用，在什么时候起作用），增强（方法：起作用时执行的业务逻辑）
+            要添加依赖，spring-boot-starter-aop
+        	新建包aspect，新建类TimeAdpect，添加@Aspect@Component
+
+    过滤器：原始http请求响应，拿不到具体处理的方法信息,不知道哪个controller处理的哪个方法处理的
+    拦截器：上面两个都能拿到，但是拿不到方法真正被调用的时候传进来的参数的值（看sprig源码，DispatcherServlet——doservice方法——dodispatch方法962-971行，）
+    切片：能拿到方法的参数的值，但是拿不到原始http请求响应
+    执行顺序
+    过滤器——拦截器——aspect—controller
+    当controller层方法有异常：反方向并且多一个：过滤器——拦截器——aspect————ControllerAdvice——controller

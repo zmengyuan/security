@@ -50,14 +50,14 @@ public class UserController {
     @JsonView(User.UserDetailView.class)
     public User getInfo(@PathVariable(name = "id",value = "id",required = false) String id) {
 
-        throw new RuntimeException("user not exist");
+//        throw new RuntimeException("user not exist");
 //        throw  new UserNotExistException(id);
 
 
-//        System.out.println("进入getinfo服务");
-//        User user = new User();
-//        user.setUsername("tom");
-//        return user;
+        System.out.println("进入getinfo服务");
+        User user = new User();
+        user.setUsername("tom");
+        return user;
     }
 
     @PostMapping
