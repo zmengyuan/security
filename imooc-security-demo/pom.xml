@@ -30,6 +30,11 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+        <!--引入文件操作-->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
 
     </dependencies>
 

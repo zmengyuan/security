@@ -184,3 +184,10 @@
     执行顺序
     过滤器——拦截器——aspect—controller
     当controller层方法有异常：反方向并且多一个：过滤器——拦截器——aspect————ControllerAdvice——controller
+
+3-9文件上传和下载
+
+    whenUploadSuccess模拟前端文件上传
+    FileController提供下载上传两种方法
+    JDK1.7以后，try（）里面的东西可以jdk帮你关，不用写finally代码了
+    添加commons-io包

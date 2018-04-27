@@ -21,8 +21,8 @@
                 <artifactId>platform-bom</artifactId>
                 <version>Brussels-SR4</version>
                 <type>pom</type>
-                <scope>import</scope>
-            </dependency>
+            <scope>import</scope>
+        </dependency>
             <!-- 选择正式的发布版本 -->
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
