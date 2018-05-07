@@ -225,3 +225,7 @@
      DeferredResultHolder在两个线程之间传递DeferredResult对象，
 
      异步方法拦截器的配置，不能直接用addInterceptor了
+
+3-11 swagger
+    与前端并行工作
+    添加pom，然后在主函数使用@EnableSwagger2
