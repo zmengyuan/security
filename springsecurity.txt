@@ -229,3 +229,10 @@
 3-11 swagger
     与前端并行工作
     添加pom，然后在主函数使用@EnableSwagger2
+
+3-12 使用wiremock伪造restful服务
+    百度wiremock
+    点击docs
+    然后running as a standalone process，下载，
+    然后启动jar包
+    java -jar wiremock-standalone-2.13.0.jar --port
