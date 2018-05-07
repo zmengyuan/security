@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -19,7 +20,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     /*
     这一段代码实际上和传统的web.xml中配置过滤器的作用是一样的
      */
-    @Bean
+//    @Bean
     public FilterRegistrationBean timeFilter() {
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
 
@@ -50,7 +51,21 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(timeInterceptor);
-        super.addInterceptors(registry);
+//        registry.addInterceptor(timeInterceptor);
+    }
+
+
+    /**
+     * 如果要拦截异步的请求，异步
+     * @param configurer
+     */
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+//        主要事以下四个设置
+        configurer.registerCallableInterceptors();
+        configurer.registerDeferredResultInterceptors();
+//        configurer.setDefaultTimeout();//阻塞时间
+//        configurer.setTaskExecutor();
+        super.configureAsyncSupport(configurer);
     }
 }
