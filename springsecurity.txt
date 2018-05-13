@@ -282,6 +282,29 @@
     	访问/user进到FilterSecurityInterceptor的beforeInvocation方法，该方法会判断配置里说所有请求都需要认证，所以抛出异常，ExceptionTranslationFilter类捕获到异常，会重定向到应该到的界面，实现登录/login，这时候会进入UsernamePasswordAuthenticationFilter类，验证通过，又进入FilterSecurityInterceptor的124行的beforeInvocation方法,这次验证通过。
 
 
+4-3 自定义用户认证逻辑
+    1、处理用户信息获取逻辑
+    2、处理用户校验逻辑
+    3、处理密码加密解密
+
+    用户信息获取逻辑/user
+        用户信息获取是在封装到一个接口中的，只有一个方法，返回UserDetails对象，抛出UsernameNotFoundException，校验通过会把用户放到session中
+        新建类MyUserDetailsService实现UserDetailsService接口
+        重写UserDetails loadUserByUsername(String username)方法
+    处理用户校验逻辑
+        UserDetails接口：账号被锁，密码是否过期，账户是否锁定，账户是否冻结，自定义的时候可以自定义类然后继承UserDetails类
+        isAccountNonExpired()账号是否过期，true没有过期
+        isCredentialsNonExpired()密码是否过期
+        isAccountNonLocked()账户是否锁定——+一般用于表示账户是否被冻结
+        isEnabled()账户是否锁定————一般用于用户信息是否被删除了（假删除，用户表一个字段表示）
+    处理密码加密解密
+        要用这个：org.springframework.security.crypto.password PasswordEncoder接口
+        先要注入spring在config类中注入，在要使用的地方Autowired
+        encode()方法是注册的时候程序员调用的，
+        matches是spring自己调用的，登录过程中拿到返回的UserDetail的password和用户登录输的password
+        要在BrowserSecurityConfig类中配置@Bean:PasswordEncoder,这里可以返回security自带的，也可以返回自定义的一个加密逻辑
+
+
 
 
 
