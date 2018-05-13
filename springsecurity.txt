@@ -304,6 +304,54 @@
         matches是spring自己调用的，登录过程中拿到返回的UserDetail的password和用户登录输的password
         要在BrowserSecurityConfig类中配置@Bean:PasswordEncoder,这里可以返回security自带的，也可以返回自定义的一个加密逻辑
 
+4-4 个性化认证流程
+    自定义登录页面 http.formLogin().loginPage("。。。")
+    自定义登录成功处理 AuthencationSuccessHandler
+    自定义登录失败处理 AuthenticationFailureHandler
+
+
+    自定义登录页面
+        在resources目录新建html,在Config类中定义登录页面，但是会报错误，这个页面死循环了，需要将该登录页面设置为不需要认证与授权！！
+        接着，在imooc-signIn.html设置表单登录，自定义了一个路径，但是也想要UsernamePassword过滤器去处理它,还是在Config类中定义。
+        Could not verify the provided CSRF token because your session was not found.前端出现这个错误，是因为springsecurity提供了一个跨站请求的默认防护，先把这个防御功能关闭
+
+        此时，还有相应的问题：
+        1/发送的restful请求，需要认证，返回的是html，这是不合理的，返回的应该是json，这时我们需要做成，如果访问的是html请求，就返回html，如果不是，就返回json
+        2/写了标准的登录页面，但是我们是要提供可重用的模块，如何让别人的项目自定义自己的页面，不定义的时候，用我们定义的页面
+
+        所以解决方案是：
+            接到html或者数据请求：判断是否需要身份认证——需要——跳转到一个自定义的Controller方法上，在方法内判断是否是html请求引起的跳转，如果是，就返回登录页面，如果不是，就返回401状态码和错误信息
+
+        
+        新建BrowserSecurityController类，由Controller处理url,并且修改Config中处理登录页的请求路径为访问该Controller的映射
+        HttpSessionRequestCache类是是springsecurity提供的专门用来缓存请求的。
+        在该类里面写requireAuthentication方法，如果是html请求，就返回html，如果是其他，就返回json
+        但是要让引用该模块的用户自定义登录页面html，所以在demo项目中的application属性文件中配置imooc.security.browser.loginPage = /demo-signIn.html
+        因为最后要管理这些配置项，所以我们用一个类来封装这些配置项
+        系统配置封装：写在core模块SecurityProperties：包含下面这几个
+                        BrowserProperties，
+                        ValidateCodeProperties，
+                        OAuth2Properties，
+                        SocialProperties，
+
+        还有一个SecurityCoreConfig类，这个配置类让SecurityProperties生效
+        common-lang，StringUtils的endsWithIgnoreCase方法
+
+    自定义登录成功处理
+        https://github.com/FasterXML/jackson-databind：jackson类
+        spring自定义的登录成功是一个跳转，但是现在不能这样
+        browser中写imoocAuthenticationSuccessHandler implements AuthenticationSuccessHandler，
+        import org.springframework.security.core.Authentication也是spring中的核心类，封装了认证信息，包括什么IP啊，session啊，认证通过后的用户信息，Authentication会根据登录的方式不同返回不同的信息;
+
+    自定义登录失败处理
+        和成功的方式一样
+
+
+    因为是可重用的模块，所以应该考虑到各种方式，当不是前后端分离的模式的时候，可能spring默认的跳转页面错误处理更适合，所以需要一个配置来说明是要JSON还是html
+    新建枚举类，说明是哪种方式，
+    BrowesrProperties类中新增LoginType属性
+    imoocAuthenticationSuccessHandler中注入SecurityProperties类，然后不实现那个接口了，改为继承一个类SavedRequestAwareAuthenticationSuccessHandler这是spring默认的成功处理器
+
 
 
 
