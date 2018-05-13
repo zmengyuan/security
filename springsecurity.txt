@@ -156,7 +156,7 @@
         传统的web项目中是web.xml添加过滤器，但是SpringBoot是没有配置文件的
         现在吧TimeFilter当成第三方，新建WebConfig类，注解@Configuration,然后在里面注入bean
 
-    Spring注入Bean：（1）添加@Component之类的注解，spring会扫描这些注解
+    Spring注入Bean：（1）添加@Component之类的注解，spring会扫描这些注解，有时候也需要在配置类中额外添加扫描配置类@ComponentScan(basePackages = "com.dxz.demo.configuration")
                     （2）配置类，注入@Bean
 
     拦截器：
@@ -236,3 +236,67 @@
     然后running as a standalone process，下载，
     然后启动jar包
     java -jar wiremock-standalone-2.13.0.jar --port
+
+
+4-1 SpringSecurity开发基于表单的认证
+    springsecurity主要用于：认证(你是谁)/授权(你能干什么)/攻击防护(防止伪造身份)
+	内容：SpringSecurity基本原理
+	    实现用户名+密码认证
+	    实现手机号+短信认证（添加自定义认证方式）
+
+4-2 SpringSecurity基本原理
+    在classpath中如果由默认的security的相关jar包，springboot会默认开启，springboot默认将所有的服务都保护起来了，访问任何resuful服务，都要进行身份认证
+    现在去把之前applicaiton中关闭的security打开.
+    启动项目，访问随意一个资源，会发现springsecurity默认的身份认证弹框，用户名默认user，密码是程序启动生成的。
+    开始写代码在其他的模块了，DEMO项目只是到时候引用安全模块。
+
+    @Configuation等价于<Beans></Beans>
+    @Bean等价于<Bean></Bean>
+    @ComponentScan等价于<context:component-scan base-package="com.dxz.demo"/>
+    @Configuration 相当于xml中的<beans>标签 @Bean相当于<bean>标签
+
+
+    在browser项目写：
+        新建BrowserSecurityConfig extends WebSecurityConfigurerAdapter（springsecurity提供的一个适配器类，web应用安全配置的适配器）
+
+
+    springsecurity基本原理：其实是过滤器链
+    过滤器链：
+    	SecurityContextPersistenceFilter  请求的时候第一个，检查session里面是否有认证信息SecurityContext，如果有SecurityContext拿出来放到线程里。响应返回的时候最后过它，检查线程是否有SecurityContext，如果有，就放到session里面去
+    	
+        绿色的过滤器每一个处理一种认证方式，它们的主要功能是检查当前的请求是不是有这个过滤器需要的信息
+        UsernamePasswordAuthenticationFilter：检查请求是不是登录请求，登录请求中带没带用户名和密码，带了的该过滤器就会尝试用用户名和密码做登录，如果没有带，就会放过去，给下一个过滤器， 用户密码 前端访问路径要为login，POST，处理表单登录
+    	BasicAuthenticationFilter ：检查请求头是不是有basic开头的authentication信息，有的话，会尝试拿出来做Base64解码做登录， springsecurity默认的
+    	...
+    	以上都是可以通过配置实现是否过滤生效,主要用于用户认证方式
+
+    	以下不能配置不起作用
+    	ExceptionTranslationFilter  捕获FilterSecurityInterceptor抛出的异常，并且会根据配置引导用户到响应的界面（比如表单登录，它会到登录页面，比如基本登录，它会弹出登录框）
+    	FilterSecurityInterceptor  最终方法的判断 ，决定当前的请求是否能访问后面的服务，就是根据我们的配置进行判断。这里如果不过就会抛出异常，在它身后就是我们的controller服务了
+    	RestFul API
+
+    断点模式看程序流程
+    	UsernamePasswordAuthenticationFilter看到它只会处理/login post请求
+    	ExceptionTranslationFilter 类的dofilter方法很简单，它的主要逻辑是在捕获exception中做了什么
+    	在FilterSecurityInterceptor的124行的beforeInvocation方法打断点
+    	访问/user进到FilterSecurityInterceptor的beforeInvocation方法，该方法会判断配置里说所有请求都需要认证，所以抛出异常，ExceptionTranslationFilter类捕获到异常，会重定向到应该到的界面，实现登录/login，这时候会进入UsernamePasswordAuthenticationFilter类，验证通过，又进入FilterSecurityInterceptor的124行的beforeInvocation方法,这次验证通过。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
