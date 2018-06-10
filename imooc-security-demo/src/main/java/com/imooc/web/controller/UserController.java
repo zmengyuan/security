@@ -10,6 +10,10 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -100,4 +104,28 @@ public class UserController {
     public void delete(@PathVariable String id) {
         System.out.println(id);
     }
+
+
+    /*
+    me1和me2是一样的返回，
+     */
+    @GetMapping(value = "/me1")
+    public Object getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    @GetMapping(value = "/me2")
+    public Object getCurrentUser(Authentication authentication) {
+        return authentication;
+    }
+
+    /*
+    如果不想返回所有信息，可以只返回userDeatils，实际上就是authentication里面的principal
+     */
+    @GetMapping(value = "/me3")
+    public Object getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
+        return userDetails;
+    }
+
+
 }

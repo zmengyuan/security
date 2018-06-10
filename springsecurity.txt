@@ -263,7 +263,7 @@
 
     springsecurity基本原理：其实是过滤器链
     过滤器链：
-    	SecurityContextPersistenceFilter  请求的时候第一个，检查session里面是否有认证信息SecurityContext，如果有SecurityContext拿出来放到线程里。响应返回的时候最后过它，检查线程是否有SecurityContext，如果有，就放到session里面去
+    	SecurityContextPersistenceFilter  请求的时候第一个，检查session里面是否有认证信息SecurityContext，如果有SecurityContext就从session拿出来放到线程里。响应返回的时候最后过它，检查线程是否有SecurityContext，如果有，就放到session里面去
     	
         绿色的过滤器每一个处理一种认证方式，它们的主要功能是检查当前的请求是不是有这个过滤器需要的信息
         UsernamePasswordAuthenticationFilter：检查请求是不是登录请求，登录请求中带没带用户名和密码，带了的该过滤器就会尝试用用户名和密码做登录，如果没有带，就会放过去，给下一个过滤器， 用户密码 前端访问路径要为login，POST，处理表单登录
@@ -352,6 +352,21 @@
     新建枚举类，说明是哪种方式，
     BrowesrProperties类中新增LoginType属性
     imoocAuthenticationSuccessHandler中注入SecurityProperties类，然后不实现那个AuthenticationSuccessHandler接口了，改为继承一个类SavedRequestAwareAuthenticationSuccessHandler这是spring默认的成功处理器
+
+4-6 认证流程源码级详情
+    认证处理流程说明
+    认证结果如何在多个请求共享
+    获取认证用户信息
+
+    断点模式看程序流程
+    	UsernamePasswordAuthenticationFilter的attemptAuthentication()方法,获得未认证的Authentication，
+        然后返回AuthenticaionManager类,本身不包含验证的逻辑，它的作用是管理下面的AuthenticationProvider，
+        真正的逻辑是在AuthenticationProvider中public Authentication authenticate(Authentication authentication)方法中，它有多种验证方式（用户名密码，微信。。。）,不同的provider支持的authentication是不一样的
+
+    通过session实现请求共享：SecurityContextPersistenceFilter  请求的时候第一个，检查session里面是否有认证信息SecurityContext，如果有SecurityContext就从session拿出来放到线程里。响应返回的时候最后过它，检查线程是否有SecurityContext，如果有，就放到session里面去
+
+    	
+
 
 
 
