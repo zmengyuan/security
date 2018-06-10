@@ -141,6 +141,7 @@
 	新建exception包，新建类，自定义异常类，在controller类中抛出自定义异常类，但是springboot返回的json也只会返回message字段，
 	如果想返回其他信息：新建类ControllerExceptionHandler类
 	@ControllerAdvice注解表示这个类是用来处理Controller类抛出的异常的，本身不处理请求
+	https://blog.csdn.net/w372426096/article/details/78429141
 	方法handleUserNotExistException（）上面可以添加注解
 
 3-7使用切片拦截Rest服务
@@ -350,7 +351,7 @@
     因为是可重用的模块，所以应该考虑到各种方式，当不是前后端分离的模式的时候，可能spring默认的跳转页面错误处理更适合，所以需要一个配置来说明是要JSON还是html
     新建枚举类，说明是哪种方式，
     BrowesrProperties类中新增LoginType属性
-    imoocAuthenticationSuccessHandler中注入SecurityProperties类，然后不实现那个接口了，改为继承一个类SavedRequestAwareAuthenticationSuccessHandler这是spring默认的成功处理器
+    imoocAuthenticationSuccessHandler中注入SecurityProperties类，然后不实现那个AuthenticationSuccessHandler接口了，改为继承一个类SavedRequestAwareAuthenticationSuccessHandler这是spring默认的成功处理器
 
 
 
