@@ -365,7 +365,21 @@
 
     通过session实现请求共享：SecurityContextPersistenceFilter  请求的时候第一个，检查session里面是否有认证信息SecurityContext，如果有SecurityContext就从session拿出来放到线程里。响应返回的时候最后过它，检查线程是否有SecurityContext，如果有，就放到session里面去
 
-    	
+4-7 图形验证码
+    1、生成图形验证码
+        根据随机数生成图片
+        将随机数放到session中
+        在将生成的图片写到接口的响应中
+
+    2、在UsernamePasswordAuthenticationFilter类之前加一个图形验证码的过滤器
+        ValidateCodeFilter extends OncePerRequestFilter，保证这个过滤器只会走一次
+
+        新建ImageCode类，返回给前端的验证码
+        ValidateCodeController，编写接口获取验证码，要在session中存值
+        ValidateCodeFilter写验证逻辑，还需要在BrowserSecurityConfig配置过滤器
+
+        运行程序，错误的消息返回太多，虽然失败但是仍然调用到了后面的登录
+        修改：
 
 
 
