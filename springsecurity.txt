@@ -380,6 +380,36 @@
 
         运行程序，错误的消息返回太多，虽然失败但是仍然调用到了后面的登录
         修改：
+            ImoocAuthenticationFailureHandler类onAuthenticationFailure()返回new SimpleResponse
+            Filter验证不通过return
+
+
+4-8 图片验证码重构
+    配置图片基本参数
+    验证码拦截接口可配置
+    验证码的生成逻辑
+
+        图形验证码基本参数配置：
+            第一级：默认配置，imooc-security-core
+                新建ImageCodeProperties类，ValidateCodeProperties类
+            第二级：应用级配置：imooc-security-demo
+                在application.yml中填写
+            第三级： 请求级配置：配置值在调用接口时传递
+                在ValidateCodeController中填写
+                ServletRequestUtils.getIntParameter（）方法；
+
+        验证码拦截接口可配置：
+            在ImageCodeProperties添加属性private String url;修改ValidateCodeFilter中的方法
+            AntPathMatcher类（spring的，注意一下）
+
+        验证码的生成逻辑可配：
+            要把一段逻辑做成可以配置的，我们需要吧这段逻辑封装到接口后面
+            新建接口ValidateCodeGenerator类，实现类ImageCodeGenerator，把Controller类的图片生成的逻辑都放到这里面来
+            把控制器里面用于生成图片验证码的一段逻辑删除、
+            新建ValidateCodeBeanConfig配置类
+
+            在增量的方式修改代码
+            在demo中新建DemoImageCodeGenerator实现ValidateCodeGenerator，自定义业务逻辑，并且不修改源码
 
 
 
