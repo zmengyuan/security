@@ -426,6 +426,15 @@
 
         配置BrowserSecurityConfig
 
+4-10 短信验证码接口开发
+    开发短信验证码接口
+    校验短信验证码并登录
+    重构代码
+
+        在ValidateCodeController添加短信验证码接口
+        模板方法模式重构验证逻辑
+        依赖搜索
+
     
 
 

@@ -1,9 +1,11 @@
 package com.imooc.security.core.validate.code;
 
 import com.imooc.security.core.properties.SecurityProperties;
+import com.imooc.security.core.validate.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.connect.web.HttpSessionSessionStrategy;
 import org.springframework.social.connect.web.SessionStrategy;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,10 +32,13 @@ public class ValidateCodeController {
     @Autowired
     private ValidateCodeGenerator imageCodeGenerator;
 
+    @Autowired
+    private ValidateCodeGenerator smsCodeGenerator;
+
     @GetMapping(value = "/code/image")
     public void createCode (HttpServletResponse response, HttpServletRequest request) throws IOException {
 //        ImageCode imageCode = createImageCode(request);
-        ImageCode imageCode = imageCodeGenerator.createImageCode(request);
+        ImageCode imageCode = (ImageCode) imageCodeGenerator.createImageCode(request);
         sessionStrategy.setAttribute(new ServletWebRequest(request),SESSION_KEY,imageCode);
         ImageIO.write(imageCode.getImage(),"JPEG",response.getOutputStream());
     }
@@ -99,6 +104,19 @@ public class ValidateCodeController {
         int b = fc + random.nextInt(bc - fc);
         return new Color(r, g, b);
     }*/
+@Autowired
+private SmsCodeSender smsCodeSender;
 
+    @GetMapping(value = "/code/sms")
+    public void createSmsCode (HttpServletResponse response, HttpServletRequest request) throws IOException, ServletRequestBindingException {
+//        ImageCode imageCode = createImageCode(request);
+        ValidateCode smCode = smsCodeGenerator.createImageCode(request);
+        sessionStrategy.setAttribute(new ServletWebRequest(request),SESSION_KEY,smCode);
+        /*
+        连短信供应商
+         */
+        String mobile = ServletRequestUtils.getRequiredStringParameter(request,"mobile");
+        smsCodeSender.send(mobile,smCode.getCode());
+    }
 
 }

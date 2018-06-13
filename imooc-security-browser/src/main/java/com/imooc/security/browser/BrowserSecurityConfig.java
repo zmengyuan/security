@@ -157,11 +157,11 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(imoocAuthenticationSuccessHandler)//登录成功处理器
                 .failureHandler(imoocAuthenticationFailureHandler)//登录失败处理器
 
-                .and()
-                .rememberMe()
-                    .tokenRepository(persistentTokenRepository())
-                    .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
-                    .userDetailsService(userDetailsService)
+//                .and()
+//                .rememberMe()
+//                    .tokenRepository(persistentTokenRepository())
+//                    .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+//                    .userDetailsService(userDetailsService)
 
                 .and()
                 .authorizeRequests() //下面这些都是授权的配置
